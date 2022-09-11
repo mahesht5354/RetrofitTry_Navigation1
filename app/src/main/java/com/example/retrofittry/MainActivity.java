@@ -55,54 +55,9 @@ public class MainActivity extends AppCompatActivity {
         vp.setAdapter(vpadapter);
         tl.setupWithViewPager(vp);
         b = findViewById(R.id.button);
-        retrofit = new Retrofit.Builder()
-                .baseUrl("https://inshortsapi.vercel.app/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
-        gfs = retrofit.create(GitHubRetrofitService.class);
+
         b.setVisibility(View.GONE);
-
-        List<News> list = new ArrayList<>();
-        Call<Source> call = gfs.getGitHubData("entertainment");
-        call.enqueue(new Callback<Source>() {
-            @Override
-            public void onResponse(Call<Source> call, Response<Source> response) {
-
-
-                for (int i=0; i<response.body().getData().size();i++)
-                {
-                    String title = response.body().getData().get(i).getTitle();
-                    String content = response.body().getData().get(i).getContent();
-                    String imageUrl = response.body().getData().get(i).getImageUrl();
-
-                    //Toast.makeText(MainActivity.this, title+"\n"+content+"\n"+imageUrl, Toast.LENGTH_LONG).show();
-                    list.add(new News(title, content, imageUrl));
-                }
-                String jsonList = gson.toJson(list);
-
-
-                RedFragment fragment = new RedFragment(); // replace your custom fragment class
-                Bundle bundle = new Bundle();
-                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                bundle.putString("LIST",jsonList); // use as per your need
-                fragment.setArguments(bundle);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-                /*NewsAdapter newsAdapter = new NewsAdapter(MainActivity.this, list);
-                recyclerView.setAdapter(newsAdapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));*/
-
-
-            }
-
-            @Override
-            public void onFailure(Call<Source> call, Throwable t) {
-
-                Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_LONG).show();
-            }
-        });
-
 
     }
 
