@@ -55,10 +55,7 @@ public class MainActivity extends AppCompatActivity {
         vp.setAdapter(vpadapter);
         tl.setupWithViewPager(vp);
         b = findViewById(R.id.button);
-
-
         b.setVisibility(View.GONE);
-
     }
 
     public void getDeatils(View view) {

@@ -2,9 +2,11 @@ package com.example.retrofittry;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -31,6 +33,7 @@ public class RedFragment extends Fragment {
     RecyclerView recyclerView;
     NewsAdapter newsAdapter;
     List<News> list;
+    ProgressBar progressBar;
 
     public RedFragment() {
         // Required empty public constructor
@@ -43,13 +46,10 @@ public class RedFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_red, container, false);
         // 1. get a reference to recyclerView
          recyclerView = rootView.findViewById(R.id.recyclerView_red);
-        newsAdapter = new NewsAdapter(getContext(), list );
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(newsAdapter);
+         progressBar = rootView.findViewById(R.id.progressbar);
+         progressBar.setVisibility(View.VISIBLE);
 
         APICall();
-
-
 
         return rootView.getRootView();
     }
@@ -63,12 +63,12 @@ public class RedFragment extends Fragment {
 
         //recyclerView.setAdapter(newsAdapter);
         list = new ArrayList<>();
-        Call<Source> call = apiInterface.getGitHubData("entertainment");
+        Call<Source> call = apiInterface.getGitHubData("sports");
         call.enqueue(new Callback<Source>() {
             @Override
             public void onResponse(Call<Source> call, Response<Source> response) {
 
-
+                progressBar.setVisibility(View.GONE);
                 for (int i=0; i<response.body().getData().size();i++)
                 {
                     String title = response.body().getData().get(i).getTitle();
@@ -79,6 +79,10 @@ public class RedFragment extends Fragment {
                     list.add(new News(title, content, imageUrl));
                 }
 
+
+                newsAdapter = new NewsAdapter(getContext(), list );
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                recyclerView.setAdapter(newsAdapter);
 
                 //newsAdapter = new NewsAdapter(getContext(), list);
                 newsAdapter.notifyDataSetChanged();
